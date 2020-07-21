@@ -32,6 +32,7 @@ class player(object):
         self.right = False
         self.walkCount = 0
         self.standing = True
+        self.hitbox = (self.x + 17, self.y + 11, 29, 52)
 
     def draw(self, win):
         if self.walkCount + 1 >= 27:
@@ -49,6 +50,9 @@ class player(object):
                 win.blit(walkRight[0], (self.x, self.y))
             else:
                 win.blit(walkLeft[0], (self.x, self.y))
+
+        self.hitbox = (self.x + 17, self.y + 11, 29, 52)
+        pygame.draw.rect(win, (255, 0 , 0), self.hitbox, 2)
 
 
 class projectile(object):
@@ -83,6 +87,7 @@ class enemy(object):
         self.path = [x, end]  # This will define where our enemy starts and finishes their path.
         self.walkCount = 0
         self.vel = 3
+        self.hitbox = (self.x + 17, self.y + 2, 31, 57)
 
     def draw(self, win):
         self.move()
@@ -95,7 +100,13 @@ class enemy(object):
         else:
             win.blit(self.walkLeft[self.walkCount // 3], (self.x, self.y))
             self.walkCount += 1
-        pass
+
+        self.hitbox = (self.x + 17, self.y + 2, 31, 57)
+        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+
+        def hit(self):
+            print("hit")
+            pass
 
     def move(self):
         if self.vel > 0:
@@ -106,6 +117,7 @@ class enemy(object):
                 self.walkCount = 0
         else:
             if self.x - self.vel > self.path[0]:
+
                 self.x += self.vel
             else:
                 self.vel = self.vel * -1
@@ -133,6 +145,9 @@ while run:
             run = False
 
     for bullet in bullets:
+        if bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1]:
+            if bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
+                goblin.hit()
         if bullet.x < 500 and bullet.x > 0:
             bullet.x += bullet.vel
         else:
